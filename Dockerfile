@@ -1,0 +1,44 @@
+FROM debian:jessie
+MAINTAINER Oleg Morozenkov
+ENV REFRESHED_AT 2015-08-28
+
+RUN echo "deb-src http://httpredir.debian.org/debian jessie main" >> /etc/apt/sources.list && \
+	apt-get update && \
+	apt-get install -y sudo ssh git supervisor uwsgi-plugin-php php5-cli php5-mysql php5-gd php5-curl php5-json && \
+	(test `php -r "echo extension_loaded('pcntl');"` -eq "1" || (apt-get source php5 && cd `ls -1F | grep '^php5-.*/$'`/ext/pcntl && phpize && ./configure && make && make install)) && \
+	apt-get clean && \
+	rm -rf /var/lib/apt/lists/*
+
+ENV PHABRICATOR_REFRESHED_AT 2015-08-28
+
+WORKDIR /usr/src
+RUN git clone -b stable --depth 1 https://github.com/phacility/libphutil.git && \
+	git clone -b stable --depth 1 https://github.com/phacility/arcanist.git && \
+	git clone -b stable --depth 1 https://github.com/phacility/phabricator.git && \
+	rm -rf libphutil/.git && \
+	rm -rf arcanist/.git && \
+	rm -rf phabricator/.git
+
+COPY phabricator-ssh-hook.sh /usr/libexec/phabricator-ssh-hook.sh
+COPY sshd_config /etc/ssh/sshd_config
+COPY sudoers /etc/sudoers
+COPY supervisor.conf /etc/supervisor.conf
+COPY uwsgi.conf /etc/uwsgi.conf
+WORKDIR /usr/src/phabricator
+RUN mkdir -p /var/run/sshd && \
+	chmod 755 /usr/libexec/phabricator-ssh-hook.sh && \
+	useradd phabricator-vcs && \
+	chsh -s /bin/sh phabricator-vcs && \
+	sed -i 's/phabricator-vcs:!!*:/phabricator-vcs:NP:/g' /etc/shadow && \
+	useradd phabricator-daemon && \
+	chsh -s /bin/sh phabricator-daemon && \
+	bin/config set phd.user phabricator-daemon && \
+	bin/config set diffusion.ssh-user phabricator-vcs && \
+	mkdir -p /var/lib/phabricator/storage && \
+	bin/config set storage.local-disk.path /var/lib/phabricator/storage
+
+VOLUME /usr/src/phabricator/conf/local
+VOLUME /var/lib/phabricator/storage
+EXPOSE 22 3031
+#CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor.conf"]
+CMD /usr/bin/uwsgi --ini /etc/uwsgi.conf
