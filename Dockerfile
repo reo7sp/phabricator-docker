@@ -1,6 +1,6 @@
 FROM debian:jessie
 MAINTAINER Oleg Morozenkov
-ENV REFRESHED_AT 2015-08-28
+ENV REFRESHED_AT 2015-08-29
 
 RUN echo "deb-src http://httpredir.debian.org/debian jessie main" >> /etc/apt/sources.list && \
 	apt-get update && \
@@ -9,7 +9,7 @@ RUN echo "deb-src http://httpredir.debian.org/debian jessie main" >> /etc/apt/so
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
 
-ENV PHABRICATOR_REFRESHED_AT 2015-08-28
+ENV PHABRICATOR_REFRESHED_AT 2015-08-29
 
 WORKDIR /usr/src
 RUN git clone -b stable --depth 1 https://github.com/phacility/libphutil.git && \
