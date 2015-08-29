@@ -39,6 +39,5 @@ RUN mkdir -p /var/run/sshd && \
 
 VOLUME /usr/src/phabricator/conf/local
 VOLUME /var/lib/phabricator/storage
-EXPOSE 22 3031
-#CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor.conf"]
-CMD /usr/bin/uwsgi --ini /etc/uwsgi.conf
+EXPOSE 22 80
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor.conf"]
