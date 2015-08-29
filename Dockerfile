@@ -19,7 +19,7 @@ RUN git clone -b stable --depth 1 https://github.com/phacility/libphutil.git && 
 	rm -rf arcanist/.git && \
 	rm -rf phabricator/.git
 
-COPY phabricator-run.sh /usr/libexec/phabricator-run.sh
+COPY phabricator-run.sh /phabricator-run.sh
 COPY phabricator-ssh-hook.sh /usr/libexec/phabricator-ssh-hook.sh
 COPY sshd_config /etc/ssh/sshd_config
 COPY sudoers /etc/sudoers
@@ -42,4 +42,4 @@ RUN mkdir -p /var/run/sshd && \
 
 VOLUME /var/lib/phabricator
 EXPOSE 22 80
-CMD ["/bin/sh", "/usr/libexec/phabricator-run.sh"]
+CMD ["/bin/sh", "/phabricator-run.sh"]
