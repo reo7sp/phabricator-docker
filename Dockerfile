@@ -35,6 +35,7 @@ RUN mkdir -p /var/run/sshd && \
 	useradd phabricator-daemon && \
 	chsh -s /bin/sh phabricator-daemon && \
 	bin/config set phd.user phabricator-daemon && \
+	bin/config set phd.start-taskmasters 1 && \
 	mkdir -p /var/lib/phabricator/repo && \
 	chown -R phabricator-daemon /var/lib/phabricator/repo && \
 	bin/config set repository.default-local-path /var/lib/phabricator/repo && \
