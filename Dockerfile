@@ -36,7 +36,7 @@ RUN mkdir -p /var/run/sshd && \
 	chsh -s /bin/sh phabricator-daemon && \
 	bin/config set phd.user phabricator-daemon && \
 	mkdir -p /var/lib/phabricator/repo && \
-	chown -R phabricator-daemon /var/lib/phabricator/storage && \
+	chown -R phabricator-daemon /var/lib/phabricator/repo && \
 	bin/config set repository.default-local-path /var/lib/phabricator/repo && \
 	mkdir -p /var/lib/phabricator/storage && \
 	chown -R www-data /var/lib/phabricator/storage && \
