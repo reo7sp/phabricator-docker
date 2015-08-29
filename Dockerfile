@@ -31,14 +31,16 @@ RUN mkdir -p /var/run/sshd && \
 	useradd phabricator-vcs && \
 	chsh -s /bin/sh phabricator-vcs && \
 	sed -i 's/phabricator-vcs:!!*:/phabricator-vcs:NP:/g' /etc/shadow && \
+	bin/config set diffusion.ssh-user phabricator-vcs && \
 	useradd phabricator-daemon && \
 	chsh -s /bin/sh phabricator-daemon && \
 	bin/config set phd.user phabricator-daemon && \
-	bin/config set diffusion.ssh-user phabricator-vcs && \
-	mkdir -p /var/lib/phabricator/storage && \
-	bin/config set storage.local-disk.path /var/lib/phabricator/storage && \
 	mkdir -p /var/lib/phabricator/repo && \
-	bin/config set repository.default-local-path /var/lib/phabricator/repo
+	chown -R phabricator-daemon /var/lib/phabricator/storage && \
+	bin/config set repository.default-local-path /var/lib/phabricator/repo && \
+	mkdir -p /var/lib/phabricator/storage && \
+	chown -R www-data /var/lib/phabricator/storage && \
+	bin/config set storage.local-disk.path /var/lib/phabricator/storage
 
 VOLUME /var/lib/phabricator
 EXPOSE 22 80
