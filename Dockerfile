@@ -36,7 +36,7 @@ RUN mkdir -p /var/run/sshd && \
 	bin/config set phd.user phabricator-daemon && \
 	bin/config set diffusion.ssh-user phabricator-vcs && \
 	mkdir -p /var/lib/phabricator/storage && \
-	bin/config set storage.local-disk.path /var/lib/phabricator/storage
+	bin/config set storage.local-disk.path /var/lib/phabricator/storage && \
 	mkdir -p /var/lib/phabricator/repo && \
 	bin/config set repository.default-local-path /var/lib/phabricator/repo
 
