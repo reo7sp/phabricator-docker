@@ -36,8 +36,9 @@ RUN mkdir -p /var/run/sshd && \
 	bin/config set diffusion.ssh-user phabricator-vcs && \
 	mkdir -p /var/lib/phabricator/storage && \
 	bin/config set storage.local-disk.path /var/lib/phabricator/storage
+	mkdir -p /var/lib/phabricator/repo && \
+	bin/config set repository.default-local-path /var/lib/phabricator/repo
 
-VOLUME /usr/src/phabricator/conf/local
-VOLUME /var/lib/phabricator/storage
+VOLUME /var/lib/phabricator
 EXPOSE 22 80
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor.conf"]
