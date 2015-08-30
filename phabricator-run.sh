@@ -2,7 +2,8 @@
 
 cd /usr/src/phabricator
 
-bin/config set mysql.host $MYSQL_PORT_3306_TCP_ADDR:$MYSQL_PORT_3306_TCP_PORT
+bin/config set mysql.host $MYSQL_PORT_3306_TCP_ADDR
+bin/config set mysql.port $MYSQL_PORT_3306_TCP_PORT
 sleep 5
 mysqluser=$(bin/config get mysql.user | jq ".config[0].value" | sed 's/^"//g; s/"$//g')
 mysqlpass=$(bin/config get mysql.pass | jq ".config[0].value" | sed 's/^"//g; s/"$//g')
