@@ -20,6 +20,7 @@ RUN git clone -b stable --depth 1 https://github.com/phacility/libphutil.git && 
 	rm -rf phabricator/.git
 
 COPY phabricator-run.sh /phabricator-run.sh
+COPY mysql-wait.sh /mysql-wait.sh
 COPY phabricator-ssh-hook.sh /usr/libexec/phabricator-ssh-hook.sh
 COPY sshd_config /etc/ssh/sshd_config
 COPY sudoers /etc/sudoers
@@ -45,4 +46,4 @@ RUN mkdir -p /var/run/sshd && \
 
 VOLUME /var/lib/phabricator
 EXPOSE 22 80
-CMD ["/bin/sh", "/phabricator-run.sh"]
+CMD ["sh", "/phabricator-run.sh"]
