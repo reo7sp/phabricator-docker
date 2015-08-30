@@ -7,7 +7,7 @@ then
 fi
 
 echo -n "mysql is starting"
-i=30
+i=60
 while [ $i -ne 0 ]
 do
 	echo -n "."
