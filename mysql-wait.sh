@@ -10,7 +10,7 @@ echo "mysql is starting..."
 i=60
 while [ $i -ne 0 ]
 do
-	echo "SELECT 1" | mysql -u $1 -p $2 -h $3 --port $4
+	echo "SELECT 1" | mysql -u$1 -p$2 -h$3 -P$4
 	if [ $? -eq 0 ]
 	then
 		exit 0
