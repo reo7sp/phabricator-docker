@@ -35,8 +35,6 @@ RUN mkdir -p /var/run/sshd && \
 	bin/config set diffusion.ssh-user phabricator-vcs && \
 	useradd phabricator-daemon && \
 	chsh -s /bin/sh phabricator-daemon && \
-	mkdir -p /var/tmp/phd/log && \
-	chown -R phabricator-daemon:phabricator-daemon /var/tmp/phd/log && \
 	bin/config set phd.user phabricator-daemon && \
 	bin/config set phd.taskmasters 1 && \
 	bin/config set repository.default-local-path /var/lib/phabricator/repo && \

@@ -8,6 +8,8 @@ mkdir -p /var/lib/phabricator/repo
 chown -R phabricator-daemon /var/lib/phabricator/repo
 mkdir -p /var/lib/phabricator/storage
 chown -R www-data /var/lib/phabricator/storage
+mkdir -p /var/tmp/phd/log
+chown -R phabricator-daemon /var/tmp/phd
 
 sleep 5
 mysqluser=$(bin/config get mysql.user | jq ".config[0].value" | sed 's/^"//g; s/"$//g')
