@@ -9,6 +9,7 @@ chown -R phabricator-daemon /var/lib/phabricator/repo
 mkdir -p /var/lib/phabricator/storage
 chown -R www-data /var/lib/phabricator/storage
 mkdir -p /var/tmp/phd/log
+mkdir -p /var/tmp/phd/pid
 chown -R phabricator-daemon /var/tmp/phd
 
 sleep 5
