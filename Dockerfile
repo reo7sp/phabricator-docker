@@ -4,7 +4,7 @@ ENV REFRESHED_AT 2015-08-29
 
 RUN echo "deb-src http://httpredir.debian.org/debian jessie main" >> /etc/apt/sources.list && \
 	apt-get update && \
-	apt-get install -y sudo ssh git supervisor mysql-client jq uwsgi-plugin-php php5-cli php5-mysql php5-gd php5-curl php5-json && \
+	apt-get install -y sudo ssh git supervisor mysql-client jq uwsgi-plugin-php php5-cli php5-mysql php5-gd php5-curl php5-json php5-apcu python-pygments && \
 	(test `php -r "echo extension_loaded('pcntl');"` -eq "1" || (apt-get source php5 && cd `ls -1F | grep '^php5-.*/$'`/ext/pcntl && phpize && ./configure && make && make install)) && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
