@@ -1,15 +1,13 @@
 FROM debian:jessie
 MAINTAINER Oleg Morozenkov
-ENV REFRESHED_AT 2015-08-29
+ENV REFRESHED_AT 2015-09-06
 
 RUN echo "deb-src http://httpredir.debian.org/debian jessie main" >> /etc/apt/sources.list && \
 	apt-get update && \
-	apt-get install -y sudo ssh git supervisor mysql-client jq uwsgi-plugin-php php5-cli php5-mysql php5-gd php5-curl php5-json php5-apcu python-pygments && \
+	apt-get install -y sudo ssh git supervisor mysql-client uwsgi-plugin-php php5-cli php5-mysql php5-gd php5-curl php5-json php5-apcu python-pygments && \
 	(test `php -r "echo extension_loaded('pcntl');"` -eq "1" || (apt-get source php5 && cd `ls -1F | grep '^php5-.*/$'`/ext/pcntl && phpize && ./configure && make && make install)) && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
-
-ENV PHABRICATOR_REFRESHED_AT 2015-08-29
 
 WORKDIR /usr/src
 RUN git clone -b stable --depth 1 https://github.com/phacility/libphutil.git && \
@@ -30,6 +28,7 @@ WORKDIR /usr/src/phabricator
 RUN mkdir -p /var/run/sshd && \
 	chmod 755 /usr/libexec/phabricator-ssh-hook.sh && \
 	useradd phabricator-vcs && \
+	mkdir -p /home/phabricator-vcs && \
 	chsh -s /bin/sh phabricator-vcs && \
 	sed -i 's/phabricator-vcs:!!*:/phabricator-vcs:NP:/g' /etc/shadow && \
 	bin/config set diffusion.ssh-user phabricator-vcs && \

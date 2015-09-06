@@ -1,1 +1,1 @@
-phabricator-vcs ALL=(phabricator-daemon) SETENV: NOPASSWD: /usr/src/phabricator/bin/git-upload-pack, /usr/src/phabricator/bin/git-receive-pack, /usr/src/phabricator/bin/hg, /usr/src/phabricator/bin/svnserve
+phabricator-vcs ALL=(phabricator-daemon) SETENV: NOPASSWD: /usr/bin/git-upload-pack, /usr/bin/git-receive-pack
