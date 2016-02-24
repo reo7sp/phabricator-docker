@@ -1,5 +1,6 @@
 FROM debian:jessie
 MAINTAINER Oleg Morozenkov
+ENV REFRESHED_AT 2015-09-06
 
 # install packages
 RUN echo "deb-src http://httpredir.debian.org/debian jessie main" >> /etc/apt/sources.list && \
