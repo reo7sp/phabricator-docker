@@ -4,7 +4,7 @@ set -e
 
 cd /usr/src/phabricator
 
-if [[ "$PHABRICATOR_DOCKER_DONT_SET_MYSQL" == 1 ]]; then
+if [[ "$PHABRICATOR_DOCKER_DONT_SET_MYSQL" != 1 ]]; then
 	bin/config set mysql.host $MYSQL_PORT_3306_TCP_ADDR
 	bin/config set mysql.port $MYSQL_PORT_3306_TCP_PORT
 fi
