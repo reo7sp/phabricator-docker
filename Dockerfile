@@ -1,8 +1,6 @@
 FROM debian:jessie
 MAINTAINER Oleg Morozenkov
-ENV REFRESHED_AT 2015-09-06
 
-# install packages
 RUN echo "deb-src http://httpredir.debian.org/debian jessie main" >> /etc/apt/sources.list && \
 	apt-get update && \
 	apt-get install -y sudo ssh git jq supervisor mysql-client uwsgi-plugin-php php5-cli php5-mysql php5-gd php5-curl php5-json php5-apcu python-pygments && \
@@ -10,7 +8,6 @@ RUN echo "deb-src http://httpredir.debian.org/debian jessie main" >> /etc/apt/so
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
 
-# download phabricator
 WORKDIR /usr/src
 RUN git clone -b stable --depth 1 https://github.com/phacility/libphutil.git && \
 	git clone -b stable --depth 1 https://github.com/phacility/arcanist.git && \
@@ -19,37 +16,29 @@ RUN git clone -b stable --depth 1 https://github.com/phacility/libphutil.git && 
 	rm -rf arcanist/.git && \
 	rm -rf phabricator/.git
 
-# copy additional files
-COPY main.sh /main.sh
-COPY scripts/mysql-wait.sh /mysql-wait.sh
-COPY scripts/phabricator-ssh-hook.sh /usr/libexec/phabricator-ssh-hook.sh
-COPY configs/sshd_config /etc/ssh/sshd_config
-COPY configs/sudoers /etc/sudoers
-COPY configs/supervisor.conf /etc/supervisor.conf
-COPY configs/uwsgi.conf /etc/uwsgi.conf
-
-# setup phabricator
+COPY phabricator-run.sh /phabricator-run.sh
+COPY mysql-wait.sh /mysql-wait.sh
+COPY phabricator-ssh-hook.sh /usr/libexec/phabricator-ssh-hook.sh
+COPY sshd_config /etc/ssh/sshd_config
+COPY sudoers /etc/sudoers
+COPY supervisor.conf /etc/supervisor.conf
+COPY uwsgi.conf /etc/uwsgi.conf
 WORKDIR /usr/src/phabricator
-
 RUN mkdir -p /var/run/sshd && \
-	chmod 755 /usr/libexec/phabricator-ssh-hook.sh
-
-RUN useradd phabricator-vcs && \
+	chmod 755 /usr/libexec/phabricator-ssh-hook.sh && \
+	useradd phabricator-vcs && \
 	mkdir -p /home/phabricator-vcs && \
 	chsh -s /bin/sh phabricator-vcs && \
 	sed -i 's/phabricator-vcs:!!*:/phabricator-vcs:NP:/g' /etc/shadow && \
-	bin/config set diffusion.ssh-user phabricator-vcs
-
-RUN useradd phabricator-daemon && \
+	bin/config set diffusion.ssh-user phabricator-vcs && \
+	useradd phabricator-daemon && \
 	chsh -s /bin/sh phabricator-daemon && \
-	bin/config set phd.user phabricator-daemon
-
-RUN bin/config set phd.taskmasters 1 && \
+	bin/config set phd.user phabricator-daemon && \
+	bin/config set phd.taskmasters 1 && \
 	bin/config set repository.default-local-path /var/lib/phabricator/repo && \
 	bin/config set storage.local-disk.path /var/lib/phabricator/storage && \
 	bin/config set pygments.enabled true
 
-# init settings
 VOLUME /var/lib/phabricator
 EXPOSE 22 80
-CMD ["sh", "/main.sh"]
+CMD ["sh", "/phabricator-run.sh"]
