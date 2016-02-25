@@ -24,7 +24,7 @@ COPY configs/uwsgi.conf /etc/uwsgi.conf
 COPY scripts/phabricator-ssh-hook.sh /usr/libexec/phabricator-ssh-hook.sh
 COPY scripts/mysql-wait.sh /mysql-wait.sh
 COPY main.sh /main.sh
-RUN mkdir -p /phabricator-docker/{on-pre-setup,on-post-setup,on-mysql,on-pre-start,on-stop}
+RUN mkdir -p /phabricator-docker/{on_pre_setup,on_post_setup,on_mysql,on_pre_start,on_stop}
 
 # setup phabricator
 WORKDIR /usr/src/phabricator

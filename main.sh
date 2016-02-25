@@ -1,27 +1,31 @@
 #!/bin/sh
 
-invoke-listeners() {
+export PHABRICATOR_HOME=/usr/src/phabricator
+
+_invoke_listeners() {
 	for f in $(ls /phabricator-docker/$1); do
 		/phabricator-docker/$1/$f
 	done
 }
 
-set-in-config() {
-	bin/config set $1 $2
+phabricator_set_in_config() {
+	$PHABRICATOR_HOME/bin/config set $1 $2
 }
+export -f phabricator_set_in_config
 
-get-from-config() {
-	bin/config get $1 | jq ".config[0].value" | sed 's/^"//g; s/"$//g'
+phabricator_get_from_config() {
+	$PHABRICATOR_HOME/bin/config get $1 | jq ".config[0].value" | sed 's/^"//g; s/"$//g'
 }
+export -f phabricator_get_from_config
 
 
-cd /usr/src/phabricator
+cd $PHABRICATOR_HOME
 
 # setup
-invoke-listeners on-pre-setup
+_invoke_listeners on_pre_setup
 
-set-in-config mysql.host $MYSQL_PORT_3306_TCP_ADDR
-set-in-config mysql.port $MYSQL_PORT_3306_TCP_PORT
+phabricator_set_in_config mysql.host $MYSQL_PORT_3306_TCP_ADDR
+phabricator_set_in_config mysql.port $MYSQL_PORT_3306_TCP_PORT
 
 mkdir -p /var/lib/phabricator/repo
 chown -R phabricator-daemon /var/lib/phabricator/repo
@@ -32,24 +36,24 @@ chown -R www-data /var/lib/phabricator/storage
 mkdir -p /var/tmp/phd/{log,pid}
 chown -R phabricator-daemon /var/tmp/phd
 
-invoke-listeners on-post-setup
+_invoke_listeners on_post_setup
 
 # fetch mysql creditinals
-export PHABRICATOR_MYSQL_USER=$(get-from-config mysql.user)
-export PHABRICATOR_MYSQL_PASS=$(get-from-config mysql.pass)
-export PHABRICATOR_MYSQL_HOST=$(get-from-config mysql.host)
-export PHABRICATOR_MYSQL_PORT=$(get-from-config mysql.port)
+export PHABRICATOR_MYSQL_USER=$(phabricator_get_from_config mysql.user)
+export PHABRICATOR_MYSQL_PASS=$(phabricator_get_from_config mysql.pass)
+export PHABRICATOR_MYSQL_HOST=$(phabricator_get_from_config mysql.host)
+export PHABRICATOR_MYSQL_PORT=$(phabricator_get_from_config mysql.port)
 
 sh /mysql-wait.sh $PHABRICATOR_MYSQL_USER $PHABRICATOR_MYSQL_PASS $PHABRICATOR_MYSQL_HOST $PHABRICATOR_MYSQL_PORT
 
-invoke-listeners on-mysql
+_invoke_listeners on_mysql
 
 # upgrade storage
 echo y | bin/storage upgrade --force
 
 # run
-invoke-listeners on-pre-start
+_invoke_listeners on_pre_start
 
 /usr/bin/supervisord -c /etc/supervisor.conf
 
-invoke-listeners on-stop
+_invoke_listeners on_stop
