@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 export PHABRICATOR_HOME=/usr/src/phabricator
 

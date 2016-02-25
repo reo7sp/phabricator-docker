@@ -50,4 +50,4 @@ RUN bin/config set phd.taskmasters 1 && \
 # init settings
 VOLUME /var/lib/phabricator
 EXPOSE 22 80
-CMD ["sh", "/main.sh"]
+CMD ["bash", "/main.sh"]
