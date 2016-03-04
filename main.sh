@@ -45,6 +45,10 @@ export PHABRICATOR_MYSQL_HOST=$(phabricator_get_from_config mysql.host)
 export PHABRICATOR_MYSQL_PORT=$(phabricator_get_from_config mysql.port)
 
 sh /mysql-wait.sh $PHABRICATOR_MYSQL_USER $PHABRICATOR_MYSQL_PASS $PHABRICATOR_MYSQL_HOST $PHABRICATOR_MYSQL_PORT
+if [[ $? != 0 ]]; then
+	echo "Can't connect to mysql"
+	exit 1
+fi
 
 _invoke_listeners on_mysql
 
